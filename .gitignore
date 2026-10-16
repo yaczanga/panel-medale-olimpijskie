@@ -1,0 +1,44 @@
+# --- Środowisko ---
+venv/
+.venv/
+env/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
+
+# --- Dane surowe: rozmiar i licencja źródła ---
+# Do repozytorium wchodzi tylko zawartość data/processed/ (patrz niżej)
+# oraz plik płac zebrany we własnym zakresie.
+data/raw/*
+!data/raw/.gitkeep
+!data/raw/wdi_worldbank.csv
+
+# data/processed/ i reports/ NIE są wykluczone świadomie. Panel analityczny jest
+# mały, a bez niego nikt nie powtórzy modeli bez pobierania danych surowych.
+# W reports/ są wyłącznie wyniki zagregowane - żadnych danych identyfikujących.
+
+# --- Raport zaliczeniowy: dokument prywatny, poza repozytorium ---
+reports/*.docx
+
+# --- Sekrety ---
+.env
+.env.local
+
+# --- System ---
+.DS_Store
+Thumbs.db
+desktop.ini
+.obsidian
+
+# --- Lokalny generator raportu .docx: poza repozytorium ---
+node_modules/
+package.json
+package-lock.json
+scripts/build_doc.js

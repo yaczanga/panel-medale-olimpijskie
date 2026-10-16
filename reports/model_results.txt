@@ -1,0 +1,183 @@
+N = 2072 | krajow = 193 | edycji = 16
+lata: 1960 - 2020
+udzial zer: 0.5738
+medals describe:
+count    2072.000000
+mean        4.692568
+std        13.124468
+min         0.000000
+25%         0.000000
+50%         0.000000
+75%         3.000000
+max       170.000000
+Name: medals, dtype: float64
+mean medals: 4.693 var medals: 172.252
+
+=== 4a Pooled Poisson ===
+                          Poisson Regression Results                          
+==============================================================================
+Dep. Variable:                 medals   No. Observations:                 2072
+Model:                        Poisson   Df Residuals:                     2067
+Method:                           MLE   Df Model:                            4
+Date:                Fri, 02 Oct 2026   Pseudo R-squ.:                  0.6578
+Time:                        18:13:51   Log-Likelihood:                -6030.8
+converged:                       True   LL-Null:                       -17625.
+Covariance Type:            nonrobust   LLR p-value:                     0.000
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept    -12.6948      0.195    -65.234      0.000     -13.076     -12.313
+log_gdp_pc     0.5771      0.010     57.546      0.000       0.557       0.597
+log_pop        0.5308      0.008     64.423      0.000       0.515       0.547
+host           0.4349      0.040     10.871      0.000       0.356       0.513
+medals_lag     0.0109      0.000     29.318      0.000       0.010       0.012
+==============================================================================
+Pearson chi2/df = 12,529.2 / 2067.0 = 6.062
+AIC pois: 12071.6
+
+=== 4b Pooled Poisson + cluster ===
+              coef     IRR      se       z       p
+log_gdp_pc  0.5771  1.7808  0.0744  7.7583  0.0000
+log_pop     0.5308  1.7003  0.0596  8.9091  0.0000
+host        0.4349  1.5448  0.0732  5.9374  0.0000
+medals_lag  0.0109  1.0110  0.0038  2.8468  0.0044
+
+=== 4c NegBin ===
+                     NegativeBinomial Regression Results                      
+==============================================================================
+Dep. Variable:                 medals   No. Observations:                 2072
+Model:               NegativeBinomial   Df Residuals:                     2067
+Method:                           MLE   Df Model:                            4
+Date:                Fri, 02 Oct 2026   Pseudo R-squ.:                  0.1820
+Time:                        18:13:51   Log-Likelihood:                -3424.4
+converged:                       True   LL-Null:                       -4186.2
+Covariance Type:            nonrobust   LLR p-value:                     0.000
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept    -12.5604      0.545    -23.056      0.000     -13.628     -11.493
+log_gdp_pc     0.5378      0.029     18.594      0.000       0.481       0.594
+log_pop        0.4995      0.025     19.957      0.000       0.450       0.549
+host           0.2905      0.342      0.851      0.395      -0.379       0.960
+medals_lag     0.0766      0.005     16.151      0.000       0.067       0.086
+alpha          1.4779      0.084     17.507      0.000       1.312       1.643
+==============================================================================
+alpha = 1.4778727133262617
+AIC negbin: 6860.7
+
+=== 4d FE-Poisson ===
+###
+
+Estimation:  Poisson
+Dep. var.: medals, Fixed effects: country_noc + edition_id
+sample: None = all
+Inference:  CRV1
+Observations:  1490
+
+| Coefficient   |   Estimate |   Std. Error |   t value |   Pr(>|t|) |   2.5% |   97.5% |
+|:--------------|-----------:|-------------:|----------:|-----------:|-------:|--------:|
+| log_gdp_pc    |      0.135 |        0.124 |     1.082 |      0.279 | -0.109 |   0.378 |
+| log_pop       |      1.261 |        0.314 |     4.017 |      0.000 |  0.646 |   1.877 |
+| host          |      0.413 |        0.083 |     5.004 |      0.000 |  0.251 |   0.575 |
+| medals_lag    |      0.008 |        0.003 |     2.782 |      0.005 |  0.002 |   0.013 |
+---
+Deviance: 2074.605 
+None
+N used FE: 1490
+
+=== 4e PA Poisson (GEE) ===
+                               GEE Regression Results                              
+===================================================================================
+Dep. Variable:                      medals   No. Observations:                 2072
+Model:                                 GEE   No. clusters:                      193
+Method:                        Generalized   Min. cluster size:                   2
+                      Estimating Equations   Max. cluster size:                  16
+Family:                            Poisson   Mean cluster size:                10.7
+Dependence structure:         Exchangeable   Num. iterations:                    24
+Date:                     Fri, 02 Oct 2026   Scale:                           1.000
+Covariance type:                    robust   Time:                         18:13:51
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept     -9.1374      0.908    -10.068      0.000     -10.916      -7.359
+log_gdp_pc     0.3915      0.074      5.307      0.000       0.247       0.536
+log_pop        0.4308      0.042     10.244      0.000       0.348       0.513
+host           0.5544      0.059      9.399      0.000       0.439       0.670
+medals_lag     0.0071      0.005      1.522      0.128      -0.002       0.016
+==============================================================================
+Skew:                          4.5312   Kurtosis:                      28.4233
+Centered skew:                 0.2775   Centered kurtosis:             39.7512
+==============================================================================
+IRR: {'log_gdp_pc': np.float64(1.4792), 'log_pop': np.float64(1.5385), 'host': np.float64(1.7409), 'medals_lag': np.float64(1.0071)}
+
+=== 4f CRE / Mundlak ===
+                          Poisson Regression Results                          
+==============================================================================
+Dep. Variable:                 medals   No. Observations:                 2072
+Model:                        Poisson   Df Residuals:                     2063
+Method:                           MLE   Df Model:                            8
+Date:                Fri, 02 Oct 2026   Pseudo R-squ.:                  0.6727
+Time:                        18:13:51   Log-Likelihood:                -5768.6
+converged:                       True   LL-Null:                       -17625.
+Covariance Type:              cluster   LLR p-value:                     0.000
+==================================================================================
+                     coef    std err          z      P>|z|      [0.025      0.975]
+----------------------------------------------------------------------------------
+Intercept        -14.6116      1.807     -8.088      0.000     -18.152     -11.071
+log_gdp_pc         0.2811      0.126      2.226      0.026       0.034       0.529
+log_pop            0.4994      0.159      3.151      0.002       0.189       0.810
+host               0.4899      0.073      6.693      0.000       0.346       0.633
+medals_lag         0.0073      0.004      1.821      0.069      -0.001       0.015
+log_gdp_pc_bar     0.3713      0.128      2.902      0.004       0.121       0.622
+log_pop_bar        0.1090      0.194      0.562      0.574      -0.271       0.489
+host_bar          -5.3867      2.560     -2.104      0.035     -10.404      -0.369
+medals_lag_bar     0.0079      0.005      1.543      0.123      -0.002       0.018
+==================================================================================
+Mundlak test chi2= 17.835675484447577 p= 0.0013287683555967514 df= 4
+
+=== 4g ZIP ===
+                     ZeroInflatedPoisson Regression Results                    
+===============================================================================
+Dep. Variable:                  medals   No. Observations:                 2072
+Model:             ZeroInflatedPoisson   Df Residuals:                     2067
+Method:                            MLE   Df Model:                            4
+Date:                 Fri, 02 Oct 2026   Pseudo R-squ.:                  0.5632
+Time:                         18:13:51   Log-Likelihood:                -4693.3
+converged:                        True   LL-Null:                       -10745.
+Covariance Type:             nonrobust   LLR p-value:                     0.000
+======================================================================================
+                         coef    std err          z      P>|z|      [0.025      0.975]
+--------------------------------------------------------------------------------------
+inflate_const         21.7435      0.990     21.970      0.000      19.804      23.683
+inflate_log_gdp_pc    -0.9809      0.051    -19.113      0.000      -1.082      -0.880
+inflate_log_pop       -0.8329      0.043    -19.300      0.000      -0.917      -0.748
+Intercept             -5.8263      0.219    -26.570      0.000      -6.256      -5.396
+log_gdp_pc             0.2912      0.011     26.719      0.000       0.270       0.313
+log_pop                0.3016      0.009     33.086      0.000       0.284       0.319
+host                   0.4716      0.040     11.793      0.000       0.393       0.550
+medals_lag             0.0158      0.000     42.560      0.000       0.015       0.017
+======================================================================================
+AIC: Poisson 12071.6 NegBin 6860.7 ZIP 9402.5
+
+=== 5 Porownanie efektu PKB ===
+                      model  coef_log_gdp_pc      se     IRR  IRR_+10%PKB
+0  Pooled Poisson (klaster)           0.5771  0.0744  1.7808       1.0565
+1          PA Poisson (GEE)           0.3915  0.0738  1.4792       1.0380
+2         Negative Binomial           0.5378  0.0289  1.7122       1.0526
+3                FE-Poisson           0.1346  0.1244  1.1441       1.0129
+4             CRE / Mundlak           0.2811  0.1263  1.3246       1.0272
+
+=== IRR pelna tabela pooled-cluster ===
+              coef     IRR      se       z       p
+log_gdp_pc  0.5771  1.7808  0.0744  7.7583  0.0000
+log_pop     0.5308  1.7003  0.0596  8.9091  0.0000
+host        0.4349  1.5448  0.0732  5.9374  0.0000
+medals_lag  0.0109  1.0110  0.0038  2.8468  0.0044
+
+=== IRR FE-Poisson ===
+log_gdp_pc coef 0.1346 se 0.1244 p 0.2794 IRR 1.1441
+log_pop coef 1.2613 se 0.314 p 0.0001 IRR 3.5301
+host coef 0.4133 se 0.0826 p 0.0 IRR 1.5118
+medals_lag coef 0.0079 se 0.0028 p 0.0054 IRR 1.0079
+
+DONE

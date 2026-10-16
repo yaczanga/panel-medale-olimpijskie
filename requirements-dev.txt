@@ -1,0 +1,17 @@
+# Węższy zestaw do testów: bez bibliotek wizualizacyjnych i środowiska notebooka.
+# Kompletność sprawdzona blokadą importów - patrz tests/README.md.
+pandas==3.0.3
+numpy==2.5.0
+scipy==1.18.0
+statsmodels==0.14.6
+patsy==1.0.2
+
+# Potrzebne w testach: fit_all szacuje FE-Poisson, a tego statsmodels nie ma.
+pyfixest==0.60.0
+
+# Przychodzi i tak przechodnio (pyfixest -> seaborn), ale pyfixest ładuje
+# matplotlib.pyplot leniwie, przy pierwszym wywołaniu fepois - wersja jest więc
+# przypięta tutaj, żeby testy nie zależały od tego, co rozwiąże pip.
+matplotlib==3.11.0
+
+pytest==9.1.1

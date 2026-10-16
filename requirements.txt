@@ -1,0 +1,21 @@
+# Wersje jak w środowisku, w którym wyniki w reports/ zostały policzone.
+pandas==3.0.3
+numpy==2.5.0
+scipy==1.18.0
+
+# Poisson, NegBin, GEE, ZIP oraz interfejs formuł.
+statsmodels==0.14.6
+patsy==1.0.2
+
+# FE-Poisson z efektami stałymi kraju i igrzysk; statsmodels tego nie ma.
+pyfixest==0.60.0
+
+matplotlib==3.11.0
+
+# Pobranie danych Banku Światowego. Potrzebne wyłącznie przy
+# data_load.load_wdi(refresh=True); analiza na zapisanym pliku działa bez tego.
+wbgapi==1.0.14
+
+# Środowisko notebooka.
+ipykernel==7.3.0
+ipython==9.14.1

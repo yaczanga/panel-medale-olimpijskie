@@ -1,17 +1,17 @@
-"""Generator syntetycznego panelu o kontrolowanych własnościach.
+"""Generator syntetycznego panelu o kontrolowanych wlasnosciach.
 
-Panel służy testom wnioskowania: proces generujący jest znany, więc da się
-sprawdzić, czy diagnostyka wykrywa to, co ma wykrywać.
+Panel sluzy testom wnioskowania: proces generujacy jest znany, wiec da sie
+sprawdzic, czy diagnostyka wykrywa to, co ma wykrywac.
 
-Trzy pokrętła, każde odpowiadające jednej własności:
+Trzy pokretla, kazde odpowiadajace jednej wlasnosci:
 
-- `country_sd` - rozrzut efektu kraju. Zero oznacza, że przekrojowy Poisson
-  jest poprawnie wyspecyfikowany, więc dyspersja musi wyjść około jedynki.
-  Wartość dodatnia to nieuwzględniona heterogeniczność, czyli nadmierna
+- `country_sd` - rozrzut efektu kraju. Zero oznacza, ze przekrojowy Poisson
+  jest poprawnie wyspecyfikowany, wiec dyspersja musi wyjsc okolo jedynki.
+  Wartosc dodatnia to nieuwzgledniona heterogenicznosc, czyli nadmierna
   dyspersja - dlatego panel z efektem kraju NIE jest panelem „czystym".
-- `gamma_mixing` - domieszka gamma, czyli jawny rozkład ujemny dwumianowy.
-- `gdp_effect_loading` - siła korelacji zamożności z efektem kraju. Dodatnia
-  wartość to sytuacja, w której RE jest obciążony i test Mundlaka musi zapalić.
+- `gamma_mixing` - domieszka gamma, czyli jawny rozklad ujemny dwumianowy.
+- `gdp_effect_loading` - sila korelacji zamoznosci z efektem kraju. Dodatnia
+  wartosc to sytuacja, w ktorej RE jest obciazony i test Mundlaka musi zapalic.
 """
 
 import numpy as np
@@ -20,20 +20,20 @@ import pytest
 
 SEED = 20261002
 
-# Panel na tyle duży, żeby estymatory zbiegały, i na tyle mały, żeby testy
-# wykonywały się w sekundach.
+# Panel na tyle duzy, zeby estymatory zbiegaly, i na tyle maly, zeby testy
+# wykonywaly sie w sekundach.
 N_COUNTRIES = 60
 N_EDITIONS = 10
 
-# Współczynniki procesu generującego - znane, więc testy mogą się do nich odnosić.
+# Wspolczynniki procesu generujacego - znane, wiec testy moga sie do nich odnosic.
 TRUE_GDP = 0.5
 TRUE_POP = 0.4
 TRUE_HOST = 0.3
 INTERCEPT = -6.0
 
-# Udział obserwacji z rolą gospodarza. Losowy, nie wyznaczony z indeksu edycji:
-# gospodarz powiązany deterministycznie z edycją byłby współliniowy z jej
-# efektem stałym i FE-Poisson przestawałby się szacować.
+# Udzial obserwacji z rola gospodarza. Losowy, nie wyznaczony z indeksu edycji:
+# gospodarz powiazany deterministycznie z edycja bylby wspolliniowy z jej
+# efektem stalym i FE-Poisson przestawalby sie szacowac.
 HOST_SHARE = 0.08
 
 
@@ -43,7 +43,7 @@ def make_panel(
     gdp_effect_loading: float = 0.0,
     seed: int = SEED,
 ) -> pd.DataFrame:
-    """Syntetyczny panel kraj x igrzyska z `medals` o znanej średniej warunkowej."""
+    """Syntetyczny panel kraj x igrzyska z `medals` o znanej sredniej warunkowej."""
     rng = np.random.default_rng(seed)
     rows = []
     for c in range(N_COUNTRIES):
@@ -91,5 +91,5 @@ def panel_nadmierna_dyspersja():
 
 @pytest.fixture(scope="session")
 def panel_skorelowany_efekt():
-    """Zamożność skorelowana z efektem kraju: RE obciążony, CRE konieczne."""
+    """Zamoznosc skorelowana z efektem kraju: RE obciazony, CRE konieczne."""
     return make_panel(country_sd=1.0, gdp_effect_loading=1.5)

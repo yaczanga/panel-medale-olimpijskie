@@ -1,7 +1,7 @@
-"""Wczytanie danych źródłowych: wyniki olimpijskie i wskaźniki Banku Światowego.
+"""Wczytanie danych zrodlowych: wyniki olimpijskie i wskazniki Banku Swiatowego.
 
-Moduł sprowadza oba źródła do wspólnego formatu, nie przekształcając ich
-merytorycznie - transformacje są w `pre_processing`.
+Modul sprowadza oba zrodla do wspolnego formatu, nie przeksztalcajac ich
+merytorycznie - transformacje sa w `pre_processing`.
 """
 
 from pathlib import Path
@@ -10,10 +10,10 @@ import pandas as pd
 
 
 def find_project_root(start: Path | None = None) -> Path:
-    """Korzeń projektu wyznaczony przez szukanie w górę pliku src/data_load.py.
+    """Korzen projektu wyznaczony przez szukanie w gore pliku src/data_load.py.
 
     Rozpoznawanie po nazwie katalogu roboczego zawodzi, bo edytory oparte na
-    VS Code ustawiają katalog roboczy notebooka różnie.
+    VS Code ustawiaja katalog roboczy notebooka roznie.
     """
     root = (start or Path.cwd()).resolve()
     while not (root / "src" / "data_load.py").is_file():
@@ -29,7 +29,7 @@ PROJECT_ROOT = find_project_root()
 RAW = PROJECT_ROOT / "data" / "raw"
 PROCESSED = PROJECT_ROOT / "data" / "processed"
 
-# Zakres: tylko letnie igrzyska. Panel co 4 lata jest spójny, a WDI to dane roczne.
+# Zakres: tylko letnie igrzyska. Panel co 4 lata jest spojny, a WDI to dane roczne.
 EDITION_TYPE = "Summer"
 
 # Seria WDI -> nazwa kolumny w panelu.
@@ -37,7 +37,7 @@ SERIES = {"NY.GDP.PCAP.KD": "gdp_pc", "SP.POP.TOTL": "pop"}
 
 WDI_FILE = RAW / "wdi_worldbank.csv"
 
-# Kody NOC (Olympedia) różnią się od ISO3 (Bank Światowy) dla części krajów.
+# Kody NOC (Olympedia) roznia sie od ISO3 (Bank Swiatowy) dla czesci krajow.
 NOC2ISO = {
     "ALG": "DZA", "ANG": "AGO", "ANT": "ATG", "ARU": "ABW", "ASA": "ASM",
     "BAH": "BHS", "BAN": "BGD", "BAR": "BRB", "BIZ": "BLZ", "BOT": "BWA",
@@ -87,15 +87,15 @@ def load_summer_games() -> pd.DataFrame:
 
 
 def map_noc_to_iso3(noc: pd.Series) -> pd.Series:
-    """NOC -> ISO3. Kody nieobecne w słowniku przechodzą bez zmiany."""
+    """NOC -> ISO3. Kody nieobecne w slowniku przechodza bez zmiany."""
     return noc.map(lambda x: NOC2ISO.get(x, x))
 
 
 def fetch_wdi(iso_list: list[str], year_min: int, year_max: int) -> pd.DataFrame:
-    """Pobranie PKB per capita i populacji z API Banku Światowego.
+    """Pobranie PKB per capita i populacji z API Banku Swiatowego.
 
-    Wymaga pakietu `wbgapi`. Bez dostępu do sieci albo bez tego pakietu
-    należy użyć `load_wdi`, która czyta zapisaną kopię.
+    Wymaga pakietu `wbgapi`. Bez dostepu do sieci albo bez tego pakietu
+    nalezy uzyc `load_wdi`, ktora czyta zapisana kopie.
     """
     import wbgapi as wb
 
@@ -117,11 +117,11 @@ def load_wdi(
     year_max: int | None = None,
     refresh: bool = False,
 ) -> pd.DataFrame:
-    """WDI z zapisanego pliku; przy `refresh=True` próba pobrania z API.
+    """WDI z zapisanego pliku; przy `refresh=True` proba pobrania z API.
 
-    Pobranie wymaga `wbgapi` (patrz requirements.txt) i dostępu do sieci.
-    Nieudane pobranie jest zgłaszane wprost, a nie maskowane odczytem pliku -
-    inaczej nie wiadomo, czy dane są świeże.
+    Pobranie wymaga `wbgapi` (patrz requirements.txt) i dostepu do sieci.
+    Nieudane pobranie jest zglaszane wprost, a nie maskowane odczytem pliku -
+    inaczej nie wiadomo, czy dane sa swieze.
     """
     if refresh:
         if iso_list is None or year_min is None or year_max is None:

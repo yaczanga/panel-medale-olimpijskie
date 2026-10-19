@@ -1,4 +1,4 @@
-"""Budowa panelu kraj x igrzyska z surowych wyników olimpijskich i WDI."""
+"""Budowa panelu kraj x igrzyska z surowych wynikow olimpijskich i WDI."""
 
 import numpy as np
 import pandas as pd
@@ -7,17 +7,17 @@ from src.data_load import PROCESSED, map_noc_to_iso3
 
 MEDALS = ["Gold", "Silver", "Bronze"]
 
-# Zmienne wchodzące do równania; braki w którejkolwiek usuwają obserwację.
+# Zmienne wchodzace do rownania; braki w ktorejkolwiek usuwaja obserwacje.
 MODEL_VARS = ["medals", "log_pop", "log_gdp_pc", "host", "medals_lag"]
 
 PANEL_FILE = PROCESSED / "panel_analityczny.csv"
 
 
 def count_medals(event_results: pd.DataFrame) -> pd.DataFrame:
-    """Liczba medali kraju na igrzyskach, z deduplikacją medali drużynowych.
+    """Liczba medali kraju na igrzyskach, z deduplikacja medali druzynowych.
 
     Jeden medal = unikalna krotka (edition_id, country_noc, event, medal).
-    Drużyna jedenastu piłkarzy to jedno złoto, nie jedenaście.
+    Druzyna jedenastu pilkarzy to jedno zloto, nie jedenascie.
     """
     rows = event_results[event_results["medal"].isin(MEDALS)]
     unique = rows.drop_duplicates(subset=["edition_id", "country_noc", "event", "medal"])
@@ -30,11 +30,11 @@ def count_medals(event_results: pd.DataFrame) -> pd.DataFrame:
 
 
 def build_panel(event_results: pd.DataFrame, summer: pd.DataFrame) -> pd.DataFrame:
-    """Panel kraj x letnie igrzyska: medale, rok, gospodarz, opóźnienie.
+    """Panel kraj x letnie igrzyska: medale, rok, gospodarz, opoznienie.
 
-    Panel powstaje z listy **uczestnictw**, nie z listy medali. Kraj, który
-    wystartował i nie zdobył medalu, ma `medals = 0` - model liczebności
-    wymaga tych zer, a lista medali by je pominęła.
+    Panel powstaje z listy **uczestnictw**, nie z listy medali. Kraj, ktory
+    wystartowal i nie zdobyl medalu, ma `medals = 0` - model liczebnosci
+    wymaga tych zer, a lista medali by je pominela.
     """
     ev = event_results.merge(summer[["edition_id"]], on="edition_id", how="inner")
 
@@ -53,8 +53,8 @@ def build_panel(event_results: pd.DataFrame, summer: pd.DataFrame) -> pd.DataFra
 def add_lag(panel: pd.DataFrame) -> pd.DataFrame:
     """`medals_lag`: medale kraju na jego poprzednich letnich igrzyskach.
 
-    Przesunięcie jest liczone **wewnątrz kraju** po uporządkowaniu po roku,
-    więc pierwsza obserwacja każdego kraju ma brak, a nie wartość sąsiada.
+    Przesuniecie jest liczone **wewnatrz kraju** po uporzadkowaniu po roku,
+    wiec pierwsza obserwacja kazdego kraju ma brak, a nie wartosc sasiada.
     """
     panel = panel.sort_values(["country_noc", "year"]).reset_index(drop=True)
     panel["medals_lag"] = panel.groupby("country_noc")["medals"].shift(1)
@@ -62,7 +62,7 @@ def add_lag(panel: pd.DataFrame) -> pd.DataFrame:
 
 
 def merge_wdi(panel: pd.DataFrame, wdi: pd.DataFrame) -> pd.DataFrame:
-    """Dołączenie PKB per capita i populacji po ISO3 i roku; logarytmy."""
+    """Dolaczenie PKB per capita i populacji po ISO3 i roku; logarytmy."""
     panel = panel.copy()
     panel["iso3"] = map_noc_to_iso3(panel["country_noc"])
 
@@ -73,7 +73,7 @@ def merge_wdi(panel: pd.DataFrame, wdi: pd.DataFrame) -> pd.DataFrame:
 
 
 def to_model_frame(df: pd.DataFrame, save: bool = False) -> pd.DataFrame:
-    """Usunięcie obserwacji z brakami w zmiennych modelu; opcjonalny zapis."""
+    """Usuniecie obserwacji z brakami w zmiennych modelu; opcjonalny zapis."""
     out = df.dropna(subset=MODEL_VARS).reset_index(drop=True).copy()
     out["country"] = out["country_noc"].astype("category")
 
@@ -97,14 +97,14 @@ def load_model_frame() -> pd.DataFrame:
 
 
 def add_mundlak_means(df: pd.DataFrame, variables: list[str]) -> pd.DataFrame:
-    """Średnie wewnątrzkrajowe regresorów (`*_bar`) - urządzenie Mundlaka."""
+    """Srednie wewnatrzkrajowe regresorow (`*_bar`) - urzadzenie Mundlaka."""
     means = df.groupby("country_noc")[variables].transform("mean")
     means.columns = [c + "_bar" for c in variables]
     return pd.concat([df, means], axis=1)
 
 
 def describe_panel(df: pd.DataFrame) -> dict:
-    """Liczby opisujące panel - te same, które trafiają do README i tabel."""
+    """Liczby opisujace panel - te same, ktore trafiaja do README i tabel."""
     return {
         "N": len(df),
         "krajow": df["country_noc"].nunique(),

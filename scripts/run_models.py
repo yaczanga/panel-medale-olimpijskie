@@ -3,7 +3,7 @@
 
 Skrypt nie buduje panelu od danych surowych - czyta zapisany
 `data/processed/panel_analityczny.csv`. To jest jego sens: szybki przebieg
-samych modeli, bez wczytywania 95 MB wyników olimpijskich. Panel buduje
+samych modeli, bez wczytywania 95 MB wynikow olimpijskich. Panel buduje
 notebooks/01_panel_medale.ipynb.
 
 Uruchomienie z korzenia projektu:

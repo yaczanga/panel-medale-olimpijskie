@@ -19,8 +19,8 @@ mean medals: 4.693 var medals: 172.252
 Dep. Variable:                 medals   No. Observations:                 2072
 Model:                        Poisson   Df Residuals:                     2067
 Method:                           MLE   Df Model:                            4
-Date:                Fri, 02 Oct 2026   Pseudo R-squ.:                  0.6578
-Time:                        18:13:51   Log-Likelihood:                -6030.8
+Date:                Mon, 19 Oct 2026   Pseudo R-squ.:                  0.6578
+Time:                        21:16:12   Log-Likelihood:                -6030.8
 converged:                       True   LL-Null:                       -17625.
 Covariance Type:            nonrobust   LLR p-value:                     0.000
 ==============================================================================
@@ -48,8 +48,8 @@ medals_lag  0.0109  1.0110  0.0038  2.8468  0.0044
 Dep. Variable:                 medals   No. Observations:                 2072
 Model:               NegativeBinomial   Df Residuals:                     2067
 Method:                           MLE   Df Model:                            4
-Date:                Fri, 02 Oct 2026   Pseudo R-squ.:                  0.1820
-Time:                        18:13:51   Log-Likelihood:                -3424.4
+Date:                Mon, 19 Oct 2026   Pseudo R-squ.:                  0.1820
+Time:                        21:16:12   Log-Likelihood:                -3424.4
 converged:                       True   LL-Null:                       -4186.2
 Covariance Type:            nonrobust   LLR p-value:                     0.000
 ==============================================================================
@@ -94,8 +94,8 @@ Method:                        Generalized   Min. cluster size:                 
                       Estimating Equations   Max. cluster size:                  16
 Family:                            Poisson   Mean cluster size:                10.7
 Dependence structure:         Exchangeable   Num. iterations:                    24
-Date:                     Fri, 02 Oct 2026   Scale:                           1.000
-Covariance type:                    robust   Time:                         18:13:51
+Date:                     Mon, 19 Oct 2026   Scale:                           1.000
+Covariance type:                    robust   Time:                         21:16:12
 ==============================================================================
                  coef    std err          z      P>|z|      [0.025      0.975]
 ------------------------------------------------------------------------------
@@ -116,8 +116,8 @@ IRR: {'log_gdp_pc': np.float64(1.4792), 'log_pop': np.float64(1.5385), 'host': n
 Dep. Variable:                 medals   No. Observations:                 2072
 Model:                        Poisson   Df Residuals:                     2063
 Method:                           MLE   Df Model:                            8
-Date:                Fri, 02 Oct 2026   Pseudo R-squ.:                  0.6727
-Time:                        18:13:51   Log-Likelihood:                -5768.6
+Date:                Mon, 19 Oct 2026   Pseudo R-squ.:                  0.6727
+Time:                        21:16:12   Log-Likelihood:                -5768.6
 converged:                       True   LL-Null:                       -17625.
 Covariance Type:              cluster   LLR p-value:                     0.000
 ==================================================================================
@@ -141,8 +141,8 @@ Mundlak test chi2= 17.835675484447577 p= 0.0013287683555967514 df= 4
 Dep. Variable:                  medals   No. Observations:                 2072
 Model:             ZeroInflatedPoisson   Df Residuals:                     2067
 Method:                            MLE   Df Model:                            4
-Date:                 Fri, 02 Oct 2026   Pseudo R-squ.:                  0.5632
-Time:                         18:13:51   Log-Likelihood:                -4693.3
+Date:                 Mon, 19 Oct 2026   Pseudo R-squ.:                  0.5632
+Time:                         21:16:12   Log-Likelihood:                -4693.3
 converged:                        True   LL-Null:                       -10745.
 Covariance Type:             nonrobust   LLR p-value:                     0.000
 ======================================================================================

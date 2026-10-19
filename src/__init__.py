@@ -1,1 +1,1 @@
-"""Panelowe modele liczebności medali olimpijskich."""
+"""Panelowe modele liczebnosci medali olimpijskich."""

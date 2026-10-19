@@ -1,9 +1,9 @@
-"""Testy wnioskowania na syntetycznym panelu o znanym procesie generującym.
+"""Testy wnioskowania na syntetycznym panelu o znanym procesie generujacym.
 
-Testy nie sprawdzają konkretnych oszacowań - to byłoby testowanie statsmodels.
-Sprawdzają własności, które muszą zachodzić: że diagnostyka dyspersji reaguje
-na dyspersję, że test Mundlaka wykrywa skorelowany efekt kraju, i że tabele
-wynikowe nie zawierają liczb innych niż w samych oszacowaniach.
+Testy nie sprawdzaja konkretnych oszacowan - to byloby testowanie statsmodels.
+Sprawdzaja wlasnosci, ktore musza zachodzic: ze diagnostyka dyspersji reaguje
+na dyspersje, ze test Mundlaka wykrywa skorelowany efekt kraju, i ze tabele
+wynikowe nie zawieraja liczb innych niz w samych oszacowaniach.
 
 Generator panelu jest w conftest.py.
 """
@@ -14,7 +14,7 @@ import pytest
 from src.inference import compare_gdp_effect, dispersion_parts, irr_table, mundlak_test
 from src.model import TERMS, cre_poisson, fit_all, pooled_poisson
 
-# Powyżej tego progu uznajemy dyspersję za nadmierną (jak w inference).
+# Powyzej tego progu uznajemy dyspersje za nadmierna (jak w inference).
 PROG_DYSPERSJI = 1.5
 
 
@@ -32,7 +32,7 @@ class TestDyspersja:
     def test_poprawnie_wyspecyfikowany_poisson_daje_dyspersje_okolo_jedynki(
         self, panel_czysty
     ):
-        """Bez efektu kraju i bez domieszki Var(Y) = E(Y), więc iloraz ~ 1."""
+        """Bez efektu kraju i bez domieszki Var(Y) = E(Y), wiec iloraz ~ 1."""
         _, _, ratio = dispersion_parts(pooled_poisson(panel_czysty))
         assert 0.7 < ratio < PROG_DYSPERSJI
 
@@ -47,7 +47,7 @@ class TestDyspersja:
     def test_nieuwzgledniony_efekt_kraju_tez_podnosi_dyspersje(
         self, panel_czysty, panel_skorelowany_efekt
     ):
-        """Heterogeniczność pominięta w równaniu ujawnia się jako dyspersja."""
+        """Heterogenicznosc pominieta w rownaniu ujawnia sie jako dyspersja."""
         _, _, czysty = dispersion_parts(pooled_poisson(panel_czysty))
         _, _, z_efektem = dispersion_parts(pooled_poisson(panel_skorelowany_efekt))
         assert z_efektem > czysty
@@ -80,7 +80,7 @@ class TestPorownanieEstymatorow:
         assert comp["model"].is_unique
 
     def test_wspolczynniki_zgadzaja_sie_ze_zrodlowymi_modelami(self, fits):
-        """Tabela nie może zawierać liczb innych niż w samych oszacowaniach."""
+        """Tabela nie moze zawierac liczb innych niz w samych oszacowaniach."""
         comp = compare_gdp_effect(fits).set_index("model")
         assert comp.loc["Pooled Poisson (klaster)", "coef_log_gdp_pc"] == pytest.approx(
             fits["pooled_cluster"].params["log_gdp_pc"]
@@ -108,7 +108,7 @@ class TestPorownanieEstymatorow:
         )
 
     def test_brak_brakow_w_tabeli_porownawczej(self, fits):
-        """Brak oznaczałby, że jeden z estymatorów nie zwrócił współczynnika."""
+        """Brak oznaczalby, ze jeden z estymatorow nie zwrocil wspolczynnika."""
         assert compare_gdp_effect(fits).notna().all().all()
 
 
@@ -119,7 +119,7 @@ class TestTestMundlaka:
         assert 0 <= p <= 1
 
     def test_wykrywa_skorelowany_efekt_kraju(self, panel_skorelowany_efekt):
-        """Gdy zamożność jest skorelowana z efektem kraju, test musi odrzucić H0."""
+        """Gdy zamoznosc jest skorelowana z efektem kraju, test musi odrzucic H0."""
         cre, _, bars = cre_poisson(panel_skorelowany_efekt)
         _, p = mundlak_test(cre, bars)
         assert p < 0.05
@@ -136,10 +136,10 @@ class TestFitAll:
             assert fits[key] is not None, f"brak oszacowania: {key}"
 
     def test_fe_pochlania_efekt_kraju(self, panel_skorelowany_efekt):
-        """Przy zamożności skorelowanej z efektem kraju pooled przeszacowuje PKB.
+        """Przy zamoznosci skorelowanej z efektem kraju pooled przeszacowuje PKB.
 
-        To jest mechanizm, na którym stoi główny wniosek projektu: po dodaniu
-        efektów stałych kraju współczynnik przy PKB musi zmaleć.
+        To jest mechanizm, na ktorym stoi glowny wniosek projektu: po dodaniu
+        efektow stalych kraju wspolczynnik przy PKB musi zmalec.
         """
         fits = fit_all(panel_skorelowany_efekt)
         pooled = fits["pooled_cluster"].params["log_gdp_pc"]

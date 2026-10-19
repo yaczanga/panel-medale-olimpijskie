@@ -1,45 +1,36 @@
 """Wykresy i tabele wynikowe. Funkcje bezstanowe, katalog docelowy globalny.
 
-Wykresy powstają z przekazanych oszacowań, nie z liczb wpisanych w kod -
-inaczej rysunek rozjeżdża się z modelem przy pierwszej zmianie specyfikacji
-i nic tego nie sygnalizuje.
+Wykresy powstaja z przekazanych oszacowan, nie z liczb wpisanych w kod -
+inaczej rysunek rozjezdza sie z modelem przy pierwszej zmianie specyfikacji.
+
+Barwy pochodza wylacznie z tokenow modulu `plot_style` i sa wybierane przez
+role, jaka seria pelni w danych: cynober to przedmiot uwagi, blekit to
+odniesienie. Zamoznosc jest przedmiotem pytania badawczego, wiec niesie
+ACCENT; populacja jest zmienna towarzyszaca i zostaje przy REFERENCE.
 """
 
 import numpy as np
 import pandas as pd
 
+from src import plot_style as style
 from src.data_load import PROJECT_ROOT
 from src.inference import LABELS
 
 FIGURES = PROJECT_ROOT / "reports" / "figures"
 TABLES = PROJECT_ROOT / "reports" / "tables"
 
-BLUE = "#2E75B6"
-ORANGE = "#C55A11"
-GREY = "#888888"
-
-# Obcięcie ogona na histogramie: pojedyncze kraje z kilkudziesięcioma medalami
-# rozciągałyby oś tak, że masa rozkładu przy zerze byłaby nieczytelna.
+# Obciecie ogona na histogramie: pojedyncze kraje z kilkudziesiecioma medalami
+# rozciagalyby os tak, ze masa rozkladu przy zerze bylaby nieczytelna.
 HIST_CLIP = 50
 
 
 def setup_style() -> None:
-    """Jednolity styl rysunków dla notebooka i skryptów."""
-    import matplotlib.pyplot as plt
-
-    plt.rcParams.update(
-        {
-            "font.size": 11,
-            "font.family": "DejaVu Sans",
-            "axes.grid": True,
-            "grid.alpha": 0.3,
-            "figure.dpi": 150,
-        }
-    )
+    """Ustawia system wizualny projektu. Wywolac raz, przed pierwszym rysunkiem."""
+    style.apply_style()
 
 
 def _finish(fig, name: str | None, show: bool):
-    """Zapis do reports/figures i/lub wyświetlenie; zamyka figurę po zapisie."""
+    """Zapis do reports/figures i/lub wyswietlenie; zamyka figure po zapisie."""
     import matplotlib.pyplot as plt
 
     fig.tight_layout()
@@ -56,71 +47,77 @@ def _finish(fig, name: str | None, show: bool):
 
 
 def plot_medal_distribution(df: pd.DataFrame, name="rozklad_medali", show=True):
-    """Rozkład liczby medali - skośność i udział zer.
+    """Rozklad liczby medali - skosnosc i udzial zer.
 
-    Oś liczebności w skali logarytmicznej, bo inaczej słupek przy zerze
-    (ponad połowa obserwacji) przykrywa cały ogon.
+    Os liczebnosci w skali logarytmicznej, bo inaczej slupek przy zerze
+    (ponad polowa obserwacji) przykrywa caly ogon.
     """
     import matplotlib.pyplot as plt
 
     share_zero = (df["medals"] == 0).mean()
-    fig, ax = plt.subplots(figsize=(7, 3.6))
+    fig, ax = plt.subplots(figsize=style.SMALL)
     ax.hist(
         df["medals"].clip(upper=HIST_CLIP),
         bins=range(0, HIST_CLIP + 2),
-        color=BLUE,
-        edgecolor="white",
+        color=style.REFERENCE,
+        edgecolor=style.BACKGROUND,
         linewidth=0.4,
     )
     ax.set_xlabel(f"Liczba medali na jednych igrzyskach (obcięte do {HIST_CLIP})")
     ax.set_ylabel("Liczba obserwacji (kraj × igrzyska)")
-    ax.set_title(f"Rozkład liczby medali (udział zer = {share_zero:.1%})")
+    udzial = f"{share_zero:.1%}".replace(".", ",")
+    ax.set_title(f"Rozkład liczby medali (udział zer = {udzial})")
     ax.set_yscale("log")
     return _finish(fig, name, show)
 
 
 def plot_gdp_effect(comp: pd.DataFrame, name="efekt_pkb_estymatory", show=True):
-    """Przedziały ufności efektu PKB w kolejnych estymatorach.
+    """Przedzialy ufnosci efektu PKB w kolejnych estymatorach.
 
-    `comp` pochodzi z `inference.compare_gdp_effect`, więc wykres zmienia się
+    `comp` pochodzi z `inference.compare_gdp_effect`, wiec wykres zmienia sie
     razem z modelami.
     """
     import matplotlib.pyplot as plt
 
-    fig, ax = plt.subplots(figsize=(7, 4))
+    fig, ax = plt.subplots(figsize=style.SMALL)
     ax.errorbar(
         comp["coef_log_gdp_pc"],
         comp["model"],
         xerr=1.96 * comp["se"],
         fmt="o",
         capsize=4,
-        color=BLUE,
-        ecolor=GREY,
+        color=style.REFERENCE,
+        ecolor=style.MUTED,
     )
-    ax.axvline(0, color="grey", ls="--", lw=1)
+    ax.axvline(0, color=style.AXES, ls="--", lw=1)
     ax.set_xlabel("Współczynnik przy log_gdp_pc (95% CI)")
     ax.set_title("Efekt PKB per capita: pooled vs PA vs FE vs CRE")
+    ax.grid(axis="x")
+    ax.grid(axis="y", visible=False)
+    style.decimal_comma(ax, axis="x", places=1)
     return _finish(fig, name, show)
 
 
 def plot_medals_vs_covariates(df: pd.DataFrame, name="medale_pkb_populacja", show=True):
-    """Surowe zależności medali od zamożności i populacji.
+    """Surowe zaleznosci medali od zamoznosci i populacji.
 
-    Przekrój ograniczony do obserwacji z co najmniej jednym medalem: zera
-    tworzyłyby linię na dole, która nie mówi nic o sile zależności.
+    Przekroj ograniczony do obserwacji z co najmniej jednym medalem: zera
+    tworzylyby linie na dole, ktora nie mowi nic o sile zaleznosci.
     """
     import matplotlib.pyplot as plt
 
     sub = df[df["medals"] > 0]
-    fig, axes = plt.subplots(1, 2, figsize=(8, 3.6))
+    fig, axes = plt.subplots(1, 2, figsize=style.STANDARD, sharey=True)
     for ax, col, colour, title in (
-        (axes[0], "log_gdp_pc", BLUE, "Medale a zamożność"),
-        (axes[1], "log_pop", ORANGE, "Medale a populacja"),
+        (axes[0], "log_gdp_pc", style.ACCENT, "Medale a zamożność"),
+        (axes[1], "log_pop", style.REFERENCE, "Medale a populacja"),
     ):
         ax.scatter(sub[col], np.log1p(sub["medals"]), s=8, alpha=0.3, color=colour)
         ax.set_xlabel("log PKB per capita" if col == "log_gdp_pc" else "log populacji")
-        ax.set_ylabel("log(1+medale)")
         ax.set_title(title)
+        style.decimal_comma(ax, axis="x", places=1)
+    axes[0].set_ylabel("log(1+medale)")
+    style.decimal_comma(axes[0], axis="y", places=1)
     return _finish(fig, name, show)
 
 
@@ -141,7 +138,7 @@ SOURCE_NOTE = "<em>Źródło:</em> Opracowanie własne."
 
 
 def stars(p: float) -> str:
-    """Gwiazdki istotności: *** 1%, ** 5%, * 10%."""
+    """Gwiazdki istotnosci: *** 1%, ** 5%, * 10%."""
     if p < 0.01:
         return "***"
     if p < 0.05:
@@ -152,7 +149,7 @@ def stars(p: float) -> str:
 
 
 def fmt(x: float) -> str:
-    """Polski separator dziesiętny i minus typograficzny."""
+    """Polski separator dziesietny i minus typograficzny."""
     return f"{x:.3f}".replace("-", "−").replace(".", ",")
 
 
@@ -162,7 +159,7 @@ def _has(d: dict, key: str) -> bool:
 
 
 def save_table(html: str, fname: str, show: bool = True) -> str:
-    """Zapis tabeli do reports/tables i wyświetlenie w notebooku."""
+    """Zapis tabeli do reports/tables i wyswietlenie w notebooku."""
     TABLES.mkdir(parents=True, exist_ok=True)
     path = TABLES / fname
     path.write_text(
@@ -183,7 +180,7 @@ def save_table(html: str, fname: str, show: bool = True) -> str:
 
 
 def reg_table_html(title, terms, coef, se, pval, stats, note, labels=None) -> str:
-    """Tabela jednego modelu: Zmienna | Współczynnik (SE pod spodem) | IRR."""
+    """Tabela jednego modelu: Zmienna | Wspolczynnik (SE pod spodem) | IRR."""
     labels = labels or LABELS
     body = ""
     for t in terms:
@@ -206,9 +203,9 @@ def reg_table_html(title, terms, coef, se, pval, stats, note, labels=None) -> st
 
 
 def multi_table_html(title, models, row_keys, stat_rows, note) -> str:
-    """Tabela zbiorcza: kolumna na model, wiersz na zmienną.
+    """Tabela zbiorcza: kolumna na model, wiersz na zmienna.
 
-    `models` to lista (nazwa, coef, se, pval); wiersz pomijany, jeśli żaden
+    `models` to lista (nazwa, coef, se, pval); wiersz pomijany, jesli zaden
     model nie szacuje danej zmiennej.
     """
     names = [m[0] for m in models]
@@ -242,7 +239,7 @@ def multi_table_html(title, models, row_keys, stat_rows, note) -> str:
 
 
 def simple_table_html(title, header, rows, note) -> str:
-    """Tabela bez par współczynnik/SE - dopasowanie modeli, porównania."""
+    """Tabela bez par wspolczynnik/SE - dopasowanie modeli, porownania."""
     head = "<tr>" + "".join(f"<th>{h}</th>" for h in header) + "</tr>"
     body = "".join(
         "<tr class='main'>" + "".join(f"<td>{c}</td>" for c in row) + "</tr>"

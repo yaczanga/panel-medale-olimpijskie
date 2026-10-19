@@ -1,17 +1,7 @@
-"""Specyfikacje i estymacja panelowych modeli liczebności.
+"""Specyfikacje i estymacja panelowych modeli liczebnosci.
 
-Siedem specyfikacji z zakresu wykładu, w odpowiednikach Stata:
-
-    pooled          poisson
-    pooled_cluster  poisson, vce(cluster)
-    negbin          nbreg
-    fe              xtpoisson, fe
-    pa              xtpoisson, pa
-    cre             CRE Poisson (Mundlak)
-    zip             zip
-
-Moduł **tworzy** oszacowania. To, co się z nich czyta (IRR, porównania,
-diagnostyka), jest w `inference`.
+Modul tworzy oszacowania; to, co sie z nich czyta, jest w `inference`.
+Odpowiedniki polecen Stata sa w komorce tekstowej notebooka.
 """
 
 import warnings
@@ -26,13 +16,13 @@ from src.pre_processing import add_mundlak_means
 TERMS = ["log_gdp_pc", "log_pop", "host", "medals_lag"]
 FORMULA = "medals ~ " + " + ".join(TERMS)
 
-# Efekty stałe kraju pochłaniają trwałą heterogeniczność (tradycja, ustrój),
-# efekty igrzysk - wspólne szoki edycji (liczba konkurencji, bojkoty).
+# Efekty stale kraju pochlaniaja trwala heterogenicznosc (tradycja, ustroj),
+# efekty igrzysk - wspolne szoki edycji (liczba konkurencji, bojkoty).
 FE_FORMULA = FORMULA + " | country_noc + edition_id"
 
 CLUSTER = "country_noc"
 
-# Zmienne w równaniu inflacyjnym ZIP: co decyduje o "zerze strukturalnym".
+# Zmienne w rownaniu inflacyjnym ZIP: co decyduje o "zerze strukturalnym".
 INFLATION_VARS = ["log_gdp_pc", "log_pop"]
 
 
@@ -42,9 +32,9 @@ def pooled_poisson(df: pd.DataFrame):
 
 
 def pooled_poisson_cluster(df: pd.DataFrame):
-    """Poisson z macierzą klastrowaną po kraju - rekomendacja Wooldridge'a.
+    """Poisson z macierza klastrowana po kraju - rekomendacja Wooldridge'a.
 
-    Zgodność beta wymaga tylko poprawnej specyfikacji równania średniej;
+    Zgodnosc beta wymaga tylko poprawnej specyfikacji rownania sredniej;
     klastrowa macierz koryguje wnioskowanie przy nadmiernej dyspersji.
     """
     return smf.poisson(FORMULA, data=df).fit(
@@ -65,7 +55,7 @@ def fe_poisson(df: pd.DataFrame):
 
 
 def pa_poisson(df: pd.DataFrame):
-    """Population-averaged Poisson (GEE) z wymienialną strukturą korelacji."""
+    """Population-averaged Poisson (GEE) z wymienialna struktura korelacji."""
     return sm.GEE.from_formula(
         FORMULA,
         groups=CLUSTER,
@@ -76,9 +66,9 @@ def pa_poisson(df: pd.DataFrame):
 
 
 def cre_poisson(df: pd.DataFrame):
-    """CRE / Mundlak: regresory plus ich średnie wewnątrzkrajowe.
+    """CRE / Mundlak: regresory plus ich srednie wewnatrzkrajowe.
 
-    Zwraca (wynik, ramkę ze średnimi, listę nazw kolumn `*_bar`).
+    Zwraca (wynik, ramke ze srednimi, liste nazw kolumn `*_bar`).
     """
     cre_df = add_mundlak_means(df, TERMS)
     bars = [c + "_bar" for c in TERMS]
@@ -90,10 +80,10 @@ def cre_poisson(df: pd.DataFrame):
 
 
 def zero_inflated_poisson(df: pd.DataFrame):
-    """ZIP: część liczebnościowa plus logit prawdopodobieństwa zera strukturalnego.
+    """ZIP: czesc liczebnosciowa plus logit prawdopodobienstwa zera strukturalnego.
 
-    Zwraca `None`, jeśli optymalizacja nie zbiegła - bez przerywania przebiegu,
-    bo pozostałe modele są od niego niezależne.
+    Zwraca `None`, jesli optymalizacja nie zbiegla - bez przerywania przebiegu,
+    bo pozostale modele sa od niego niezalezne.
     """
     from patsy import dmatrices
     from statsmodels.discrete.count_model import ZeroInflatedPoisson
@@ -114,9 +104,8 @@ def zero_inflated_poisson(df: pd.DataFrame):
 def fit_all(df: pd.DataFrame) -> dict:
     """Wszystkie specyfikacje w jednym przebiegu.
 
-    Zwraca słownik z oszacowaniami oraz ramką CRE i nazwami średnich Mundlaka,
-    których potrzebują `inference` i `visualisation`. Na panelu rzędu dwóch
-    tysięcy obserwacji całość liczy się poniżej dwóch sekund.
+    Zwraca slownik z oszacowaniami oraz ramka CRE i nazwami srednich Mundlaka,
+    ktorych potrzebuja `inference` i `visualisation`.
     """
     cre, cre_df, bars = cre_poisson(df)
     return {

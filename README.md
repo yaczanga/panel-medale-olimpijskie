@@ -1,5 +1,7 @@
 # Determinanty liczby medali olimpijskich - panelowe modele liczebności
 
+![testy](https://github.com/yaczanga/panel-medale-olimpijskie/actions/workflows/testy.yml/badge.svg)
+
 Projekt szacuje, w jakim stopniu liczba medali zdobywanych przez kraj na letnich igrzyskach zależy od zamożności, wielkości populacji i roli gospodarza. Zmienna objaśniana jest liczbą zdarzeń, a ponad połowa obserwacji to zera, więc zastosowano rodzinę modeli liczebności: Poissona, ujemny dwumianowy i zero-inflated, w wariantach przekrojowym, uśrednionym po populacji oraz z efektami stałymi.
 
 Punktem zainteresowania jest różnica między oszacowaniami: efekt zamożności mierzony między krajami jest ponad czterokrotnie większy od efektu mierzonego wewnątrz kraju w czasie.
